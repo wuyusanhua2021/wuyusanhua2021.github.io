@@ -2,6 +2,24 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://wuyusanhua2021.github.io/2022/01/23/CISCN2019%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BADay1Web1-Dropbox/</loc>
+    
+    <lastmod>2022-01-24</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wuyusanhua2021.github.io/2022/01/23/%E7%BD%91%E9%BC%8E%E6%9D%AF2020-AliceWebsite/</loc>
+    
+    <lastmod>2022-01-24</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://wuyusanhua2021.github.io/2022/01/19/%E4%B8%A4%E9%81%93%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/</loc>
     
     <lastmod>2022-01-20</lastmod>
@@ -157,7 +175,7 @@
 
   <url>
     <loc>https://wuyusanhua2021.github.io/</loc>
-    <lastmod>2022-01-20</lastmod>
+    <lastmod>2022-01-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
