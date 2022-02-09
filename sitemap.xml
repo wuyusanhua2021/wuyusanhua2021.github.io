@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://wuyusanhua2021.github.io/2022/02/09/secrets-of-admin/</loc>
+    
+    <lastmod>2022-02-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://wuyusanhua2021.github.io/2022/01/23/CISCN2019%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BADay1Web1-Dropbox/</loc>
     
     <lastmod>2022-01-24</lastmod>
@@ -66,15 +75,6 @@
   
   <url>
     <loc>https://wuyusanhua2021.github.io/2021/12/20/HFCTF2021-easyflask-writeup/</loc>
-    
-    <lastmod>2022-01-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wuyusanhua2021.github.io/2021/11/06/BUUCTF-2018-Online-Tool-Writeup/</loc>
     
     <lastmod>2022-01-06</lastmod>
     
@@ -166,7 +166,7 @@
 
   <url>
     <loc>https://wuyusanhua2021.github.io/</loc>
-    <lastmod>2022-01-27</lastmod>
+    <lastmod>2022-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
