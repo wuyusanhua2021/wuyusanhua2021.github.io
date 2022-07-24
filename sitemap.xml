@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://wuyusanhua2021.github.io/2022/07/24/Java%E5%AD%A6%E4%B9%A0-CommonsCollections-%E4%BA%8C/</loc>
+    
+    <lastmod>2022-07-24</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://wuyusanhua2021.github.io/2022/07/21/Java%E5%AD%A6%E4%B9%A0-CommonsCollections%E9%93%BE/</loc>
     
     <lastmod>2022-07-21</lastmod>
@@ -292,7 +301,7 @@
 
   <url>
     <loc>https://wuyusanhua2021.github.io/</loc>
-    <lastmod>2022-07-21</lastmod>
+    <lastmod>2022-07-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
